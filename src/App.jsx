@@ -26,6 +26,10 @@ function calculateWinner(squares) {
     return null;
 }
 
+function createSequenceNumberArray(length) {
+    return Array.from({length}, (_, i) => i + 1)
+}
+
 export function Board({xIsNext, squares, onPlay}) {
 
     function handleClick(index) {
@@ -48,25 +52,24 @@ export function Board({xIsNext, squares, onPlay}) {
     } else {
         status = 'Next player: ' + (xIsNext ? 'X' : 'O');
     }
+    const rowCount = 3;
+    const colCount = 3;
+    let currentColIndex = 0;
+
+    const squareComponents = createSequenceNumberArray(rowCount)
+        .map((rowIndex) => <div key={rowIndex} className="board-row">
+            {createSequenceNumberArray(colCount)
+                .map(() => {
+                    const squareIndex = currentColIndex++;
+                    return <Square key={squareIndex} value={squares[squareIndex]}
+                                   onSquareClick={() => handleClick(squareIndex)}/>
+                })}
+        </div>);
 
     return (
         <>
             <div className="status">{status}</div>
-            <div className="board-row">
-                <Square value={squares[0]} onSquareClick={() => handleClick(0)}/>
-                <Square value={squares[1]} onSquareClick={() => handleClick(1)}/>
-                <Square value={squares[2]} onSquareClick={() => handleClick(2)}/>
-            </div>
-            <div className="board-row">
-                <Square value={squares[3]} onSquareClick={() => handleClick(3)}/>
-                <Square value={squares[4]} onSquareClick={() => handleClick(4)}/>
-                <Square value={squares[5]} onSquareClick={() => handleClick(5)}/>
-            </div>
-            <div className="board-row">
-                <Square value={squares[6]} onSquareClick={() => handleClick(6)}/>
-                <Square value={squares[7]} onSquareClick={() => handleClick(7)}/>
-                <Square value={squares[8]} onSquareClick={() => handleClick(8)}/>
-            </div>
+            {squareComponents}
         </>
     )
 }
