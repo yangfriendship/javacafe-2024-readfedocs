@@ -2,7 +2,6 @@ import './styles.css';
 import {useState} from "react";
 
 function Square({value, onSquareClick}) {
-
     return <button className="square" onClick={onSquareClick}>{value}</button>;
 }
 
@@ -26,8 +25,25 @@ function calculateWinner(squares) {
     return null;
 }
 
+/**
+ * 주어진 길이만큼 연속된 숫자의 배열을 생성 <br/>
+ * 예) createSequenceNumberArray(3) => [0, 1, 2]
+ */
 function createSequenceNumberArray(length) {
     return Array.from({length}, (_, i) => i + 1)
+}
+
+function SquareRows({rowCount, colCount, squares, handleClick}) {
+    let currentColIndex = 0;
+    return createSequenceNumberArray(rowCount)
+        .map((rowIndex) => <div key={String(rowIndex)} className="board-row">
+            {createSequenceNumberArray(colCount)
+                .map(() => {
+                    const squareIndex = currentColIndex++;
+                    return <Square key={squareIndex} value={squares[squareIndex]}
+                                   onSquareClick={() => handleClick(squareIndex)}/>
+                })}
+        </div>)
 }
 
 export function Board({xIsNext, squares, onPlay}) {
@@ -52,24 +68,11 @@ export function Board({xIsNext, squares, onPlay}) {
     } else {
         status = 'Next player: ' + (xIsNext ? 'X' : 'O');
     }
-    const rowCount = 3;
-    const colCount = 3;
-    let currentColIndex = 0;
-
-    const squareComponents = createSequenceNumberArray(rowCount)
-        .map((rowIndex) => <div key={rowIndex} className="board-row">
-            {createSequenceNumberArray(colCount)
-                .map(() => {
-                    const squareIndex = currentColIndex++;
-                    return <Square key={squareIndex} value={squares[squareIndex]}
-                                   onSquareClick={() => handleClick(squareIndex)}/>
-                })}
-        </div>);
 
     return (
         <>
             <div className="status">{status}</div>
-            {squareComponents}
+            <SquareRows squares={squares} colCount={3} rowCount={3} handleClick={handleClick}/>
         </>
     )
 }
