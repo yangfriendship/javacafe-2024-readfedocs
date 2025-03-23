@@ -1,5 +1,6 @@
 import './styles.css';
 import {useState} from "react";
+import AppV2 from "./sample/SqureSample.jsx";
 
 function Square({value, onSquareClick}) {
     return <button className="square" onClick={onSquareClick}>{value}</button>;
@@ -130,4 +131,5 @@ function App() {
     )
 }
 
-export default App
+export default AppV2
+
