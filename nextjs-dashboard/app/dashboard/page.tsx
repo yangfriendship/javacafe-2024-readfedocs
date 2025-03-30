@@ -5,20 +5,26 @@ import {lusitana} from '@/app/ui/fonts';
 import {fetchRevenue, fetchLatestInvoices, fetchCardData} from '@/app/lib/data';
 
 export default async function Page() {
-
-    const revenue = await fetchRevenue();
-    const latestInvoices = await fetchLatestInvoices();
+    let startTime = new Date();
+    async function delayWrapper<T>(func: () => T, time: number = 2000): Promise<T> {
+        return new Promise((resolve) => setTimeout(() => resolve(func()), time));
+    }
+    const revenue = await delayWrapper(fetchRevenue);
+    const latestInvoices = await delayWrapper(fetchLatestInvoices);
     const {
         numberOfCustomers,
         numberOfInvoices,
         totalPaidInvoices,
         totalPendingInvoices
-    } = await fetchCardData();
+    } = await delayWrapper(fetchCardData);
+
+    let endTime = new Date();
+    const diffInSeconds = Math.abs((endTime.getTime() - startTime.getTime()) / 1000);
 
     return (
         <main>
             <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
-                Dashboard
+                Dashboard. {diffInSeconds} 초 소요됨
             </h1>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 <Card title="Collected" value={totalPaidInvoices} type="collected"/>
