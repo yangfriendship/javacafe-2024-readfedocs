@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",                          // 최신 JS 기능을 사용
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],    // 브라우저 + 최신 ES 지원
+    "allowJs": true,                             // .js 파일도 허용
+    "skipLibCheck": true,                        // 타입 정의 검사를 빠르게 스킵
+    "esModuleInterop": true,                     // CommonJS ↔ ES6 모듈 호환
+    "allowSyntheticDefaultImports": true,        // 기본 import 허용 (babel 스타일)
+    "strict": true,                              // 엄격한 타입 검사
+    "forceConsistentCasingInFileNames": true,    // 파일 이름 대소문자 일관성
+    "noFallthroughCasesInSwitch": true,          // switch 문 안전하게
+    "module": "ESNext",                          // 모듈 시스템
+    "moduleResolution": "Bundler",               // Vite/webpack에 맞게
+    "resolveJsonModule": true,                   // json import 허용
+    "isolatedModules": true,                     // 개별 모듈로 처리 (ts-loader용)
+    "jsx": "react-jsx"                           // React 17+ JSX 자동 import (React 18용)
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}

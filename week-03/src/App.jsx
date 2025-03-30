@@ -1,5 +1,5 @@
 import {useState} from "react";
-
+import MyButton from "./components/MyButton"
 function ProductCategoryRow({category}) {
     return (
         <tr>
@@ -113,5 +113,8 @@ const PRODUCTS = [
 ];
 
 export default function App() {
-    return <FilterableProductTable products={PRODUCTS}/>;
+    return <>
+    <FilterableProductTable products={PRODUCTS}/>
+    <MyButton title={'MyButton'}/>
+    </>;
 }
