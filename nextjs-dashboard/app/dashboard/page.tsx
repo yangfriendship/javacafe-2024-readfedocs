@@ -6,21 +6,33 @@ import {fetchRevenue, fetchLatestInvoices, fetchCardData} from '@/app/lib/data';
 
 export default async function Page() {
     let startTime = new Date();
+
     async function delayWrapper<T>(func: () => T, time: number = 2000): Promise<T> {
         return new Promise((resolve) => setTimeout(() => resolve(func()), time));
     }
-    const revenue = await delayWrapper(fetchRevenue);
-    const latestInvoices = await delayWrapper(fetchLatestInvoices);
+
+    const invoiceCountPromise = delayWrapper(fetchRevenue);
+    const customerCountPromise = delayWrapper(fetchLatestInvoices);
+    const invoiceStatusPromise = delayWrapper(fetchCardData);
+
+    const data = await Promise.all([
+        invoiceCountPromise,
+        customerCountPromise,
+        invoiceStatusPromise,
+    ]);
+
+    const revenue = data[0];
+    const latestInvoices = data[1];
     const {
-        numberOfCustomers,
-        numberOfInvoices,
         totalPaidInvoices,
-        totalPendingInvoices
-    } = await delayWrapper(fetchCardData);
+        totalPendingInvoices,
+        numberOfInvoices,
+        numberOfCustomers
+    } = data[2];
+
 
     let endTime = new Date();
     const diffInSeconds = Math.abs((endTime.getTime() - startTime.getTime()) / 1000);
-
     return (
         <main>
             <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
