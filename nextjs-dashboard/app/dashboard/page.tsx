@@ -3,32 +3,58 @@ import RevenueChart from '@/app/ui/dashboard/revenue-chart';
 import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
 import {lusitana} from '@/app/ui/fonts';
 import {fetchRevenue, fetchLatestInvoices, fetchCardData} from '@/app/lib/data';
+import {Suspense} from 'react';
+import {RevenueChartSkeleton} from "@/app/ui/skeletons";
+
+// export const dynamic = 'force-dynamic';
 
 export default async function Page() {
     let startTime = new Date();
 
-    async function delayWrapper<T>(func: () => T, time: number = 2000): Promise<T> {
+    async function delayWrapper<T>(func: () => T, time: number = 12000): Promise<T> {
         return new Promise((resolve) => setTimeout(() => resolve(func()), time));
     }
 
-    const invoiceCountPromise = delayWrapper(fetchRevenue);
-    const customerCountPromise = delayWrapper(fetchLatestInvoices);
-    const invoiceStatusPromise = delayWrapper(fetchCardData);
+    // const invoiceCountPromise = delayWrapper(fetchRevenue);
+    // const customerCountPromise = delayWrapper(fetchLatestInvoices);
+    // const invoiceStatusPromise = delayWrapper(fetchCardData);
+    //
+    // const data = await Promise.all([
+    //     invoiceCountPromise,
+    //     customerCountPromise,
+    //     invoiceStatusPromise,
+    // ]);
+    //
+    // const revenue = data[0];
+    // const latestInvoices = data[1];
+    // const {
+    //     totalPaidInvoices,
+    //     totalPendingInvoices,
+    //     numberOfInvoices,
+    //     numberOfCustomers
+    // } = data[2];
 
-    const data = await Promise.all([
-        invoiceCountPromise,
-        customerCountPromise,
-        invoiceStatusPromise,
-    ]);
+    const latestInvoices = await fetchLatestInvoices();
+    // const invoiceStatusPromise = await fetchCardData;
 
-    const revenue = data[0];
-    const latestInvoices = data[1];
-    const {
+    // const data = await Promise.all([
+    //     invoiceStatusPromise,
+    // ]);
+    //
+    // const {
+    //     totalPaidInvoices,
+    //     totalPendingInvoices,
+    //     numberOfInvoices,
+    //     numberOfCustomers
+    // } = data[0];
+
+        const {
         totalPaidInvoices,
         totalPendingInvoices,
         numberOfInvoices,
         numberOfCustomers
-    } = data[2];
+    } =  await fetchCardData();
+
 
 
     let endTime = new Date();
@@ -49,7 +75,9 @@ export default async function Page() {
                 />}
             </div>
             <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
-                <RevenueChart revenue={revenue}/>
+                <Suspense fallback={<RevenueChartSkeleton/>}>
+                    <RevenueChart/>
+                </Suspense>
                 <LatestInvoices latestInvoices={latestInvoices}/>
             </div>
         </main>
